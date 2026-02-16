@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AH Mobile - Ramzan Activity Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root{--dark-green:#0a4f0d;--medium-green:#1b5e20;--light-green:#a5d6a7;--gold-color:#d4af37;--background-cream:#fdfaf5;}
+        body{font-family:'Noto Nastaliq Urdu',sans-serif;background-color:var(--background-cream);background-image:url('data:image/svg+xml,%3Csvg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23d6e8d6" fill-opacity="0.3"%3E%3Cpath d="M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');color:#333;margin:0;padding:0;}
+        .main-header{background:var(--dark-green);color:white;padding:10px 20px;text-align:center;border-bottom:5px solid var(--gold-color);}
+        .main-header h1{font-family:'Amiri',serif;font-size:2.2em;color:white;margin:0;line-height:1.2;}
+        .container{width:100%;padding:20px;box-sizing:border-box;}
+        .auth-container{max-width:500px;margin:40px auto;background:white;border-radius:15px;border:1px solid #ddd;box-shadow:0 10px 25px rgba(0,0,0,0.1);padding:30px;text-align:center;}
+        #register-container{display:none;}
+        .auth-container h2{font-size:2em;color:var(--dark-green);}
+        .auth-container p{font-size:1.1em;}
+        .auth-container input{padding:12px;border-radius:8px;border:1px solid #ccc;width:90%;text-align:right;font-size:1.1em;font-family:'Noto Nastaliq Urdu',sans-serif;margin-top:10px;}
+        .auth-toggle-link{color:var(--medium-green);text-decoration:underline;cursor:pointer;display:block;margin-top:15px;}
+        .tracker-container{display:none;}
+        .btn{padding:12px 30px;border:none;background-color:var(--medium-green);color:white;border-radius:8px;cursor:pointer;font-size:18px;margin-top:15px;transition:background-color 0.3s;}
+        .btn:hover{background-color:var(--dark-green);}
+        .header-controls{display:flex;justify-content:space-between;align-items:center;padding:10px;margin-bottom:15px;background:#fff;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.05);}
+        .logout-btn{background-color:#c62828;}
+        .logout-btn:hover{background-color:#b71c1c;}
+        #welcome-message{font-size:1.4em;font-weight:bold;color:var(--dark-green);}
+        #manual-save-btn{background-color:var(--gold-color);color:var(--dark-green);font-weight:bold;}
+        #manual-save-btn:hover{background-color:#b38e27;}
+        .progress-section{margin:20px 0;}
+        .progress-bar-container{width:100%;height:30px;background-color:#e0e0e0;border-radius:15px;overflow:hidden;border:2px solid var(--light-green);}
+        .progress-bar{width:0%;height:100%;background:linear-gradient(90deg,var(--medium-green),var(--light-green));transition:width 0.5s ease-in-out;text-align:center;line-height:30px;color:white;font-weight:bold;}
+        .progress-label{text-align:center;font-size:1.3em;margin-bottom:10px;color:var(--dark-green);}
+        table{width:100%;border-collapse:collapse;margin-top:20px;font-size:1em;}
+        th,td{border:1px solid #ccc;padding:10px;text-align:center;}
+        th{background-color:var(--medium-green);color:white;}
+        .activity-col{text-align:right;font-weight:bold;background-color:#f9f9f9;}
+        input[type="checkbox"]{width:20px;height:20px;cursor:pointer;}
+        .other-activities{margin-top:40px;padding:20px;background:#fff;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+        .other-activities label{display:block;margin:15px 0;font-size:1.1em;cursor:pointer;}
+        
+        /* NEW: RESPONSIVE DESIGN MEDIA QUERIES */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 1.6em;
+            }
+            .auth-container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+            .header-controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+                text-align: center;
+            }
+            .logout-btn {
+                align-self: center;
+            }
+            #welcome-message {
+                order: -1; 
+            }
+            .container {
+                padding: 10px;
+            }
+        }
+        @media (max-width: 480px) {
+            .main-header h1 {
+                font-size: 1.4em;
+            }
+            .auth-container {
+                 width: 95%;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+            th, td {
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>AH Mobile Ramzan Activity Tracker</h1>
+    </header>
+
+    <div class="container">
+        <!-- HTML Content -->
+        <div id="login-container" class="auth-container"><h2>لاگ ان</h2><p>براہ کرم اپنا رجسٹرڈ واٹس ایپ نمبر درج کریں۔</p><input type="tel" id="login-number" placeholder="03xxxxxxxxx"><br><button class="btn" onclick="login()">لاگ ان</button><span class="auth-toggle-link" onclick="toggleAuthForms(true)">نیا اکاؤنٹ نہیں ہے؟ یہاں رجسٹر کریں۔</span></div>
+        <div id="register-container" class="auth-container"><h2>نئی رجسٹریشن</h2><p>نیا ٹریکر شروع کرنے کے لیے رجسٹر کریں۔</p><input type="text" id="register-name" placeholder="اپنا نام لکھیں"><input type="tel" id="register-number" placeholder="واٹس ایپ نمبر (03xxxxxxxxx)"><input type="text" id="register-city" placeholder="شہر"><input type="number" id="register-age" placeholder="عمر"><br><button class="btn" onclick="register()">رجسٹر کریں</button><span class="auth-toggle-link" onclick="toggleAuthForms(false)">پہلے سے ہی ایک اکاؤنٹ ہے؟ لاگ ان کریں۔</span></div>
+        <div id="tracker-container" class="tracker-container">
+            <div class="header-controls">
+                <button class="btn logout-btn" onclick="logout()">لاگ آؤٹ</button>
+                <button class="btn" id="manual-save-btn" onclick="saveData(true)">محفوظ کریں</button>
+                <h2 id="welcome-message"></h2>
+            </div>
+            <div class="progress-section"><h3 class="progress-label">آپ کی مجموعی پیشرفت</h3><div class="progress-bar-container"><div class="progress-bar" id="progress-bar">0%</div></div></div>
+            <h2>روزمرہ کے معمولات</h2>
+            <div style="overflow-x:auto;">
+                <table><thead><tr><th>سرگرمی</th><script>for(let i=1;i<=30;i++)document.write(`<th>${i}</th>`);</script></tr></thead><tbody id="daily-activities"></tbody></table>
+            </div>
+            <div class="other-activities"><h3>دیگر اہم کام</h3><div id="special-activities"></div></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQJkMcnT4v7xMpz21hTu-Qf2-LuIVsJLU",
+      authDomain: "ah-ramzan-tracker.firebaseapp.com",
+      projectId: "ah-ramzan-tracker",
+      storageBucket: "ah-ramzan-tracker.appspot.com",
+      messagingSenderId: "887600776644",
+      appId: "1:887600776644:web:3e4d919f6fa3f31651d091",
+      measurementId: "G-27SJHXNWCN"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // JavaScript code (bilkul pehle jaisa hai)
+    const dailyActivities=["میں نے تہجد کی نماز ادا کی؟","میں نے روزہ رکھا؟","میں نے فجر کی نماز باجماعت ادا کی؟","میں نے فجر کے وقت سورہ یسین کی تلاوت کی؟","میں نے سارا دن لڑائی، جھگڑا اور جھوٹ سے اجتناب کیا؟","میں نے ظہر کی نماز باجماعت ادا کی؟","عصر کے بعد سو مرتبہ درود پاک بھیجا؟","میں نے کم از کم ایک پارے کی تلاوت کی؟","میں نے عصر کی نماز باجماعت ادا کی؟","میں نے دن میں سو مرتبہ استغفار کیا؟","میں نے مغرب کی نماز باجماعت ادا کی؟","میں نے عشاء کی نماز باجماعت ادا کی اور تراویح بھی پڑھی؟","والدین کی خدمت کی؟"];
+    const specialActivities=["کسی مسلمان بھائی کو اپنے ساتھ افطار کرایا؟","میں نے اللہ کے راستے میں صدقہ کیا؟","جمعہ کے دن سورہ کہف کی تلاوت کی؟","میں نے صلوۃ التسبیح ادا کی۔","ایصال ثواب کیا اور اپنی موت کو یاد کیا؟","میں نے مکمل رمضان تراویح پڑھی؟","میں نے مکمل رمضان روزے رکھے؟","میں نے رمضان میں ایک مرتبہ قرآن پاک مکمل کیا؟","میں نے مسائل (غسل، وضو، نماز) سیکھے؟","میں نے آخری عشرہ کی طاق راتوں میں عبادت کی؟"];
+    let totalCheckboxes=0;
+    function validatePhoneNumber(number){const regex=/^(03|\+923|923)\d{9}$/;return regex.test(number);}
+    function toggleAuthForms(showRegister){document.getElementById('login-container').style.display=showRegister?'none':'block';document.getElementById('register-container').style.display=showRegister?'block':'none';}
+    async function register(){const name=document.getElementById('register-name').value.trim();const number=document.getElementById('register-number').value.trim();const city=document.getElementById('register-city').value.trim();const age=document.getElementById('register-age').value.trim();if(!name||!number||!city||!age){alert("براہ کرم تمام خانے پُر کریں۔");return;}
+    if(!validatePhoneNumber(number)){alert("براہ کرم درست پاکستانی واٹس ایپ نمبر درج کریں۔ (مثال: 03123456789)۔");return;}
+    const userRef=db.collection('users').doc(number);const doc=await userRef.get();if(doc.exists){alert("یہ نمبر پہلے ہی رجسٹرڈ ہے۔ براہ کرم لاگ ان کریں۔");}else{await userRef.set({name:name,phoneNumber:number,city:city,age:age,createdAt:new Date(),activityData:{}});localStorage.setItem('loggedInUser',number);showTracker(name);}}
+    async function login(){const number=document.getElementById('login-number').value.trim();if(!number){alert("براہ کرم اپنا واٹس ایپ نمبر درج کریں۔");return;}
+    if(!validatePhoneNumber(number)){alert("براہ کرم درست پاکستانی واٹس ایپ نمبر درج کریں۔");return;}
+    const userRef=db.collection('users').doc(number);const doc=await userRef.get();if(doc.exists){localStorage.setItem('loggedInUser',number);showTracker(doc.data().name);}else{alert("کوئی صارف اس نمبر کے ساتھ رجسٹرڈ نہیں ہے۔ براہ کرم پہلے رجسٹر ہوں۔");}}
+    function logout(){if(confirm("کیا آپ واقعی لاگ آؤٹ کرنا چاہتے ہیں؟")){localStorage.removeItem('loggedInUser');location.reload();}}
+    function showTracker(userName){document.getElementById('welcome-message').innerText=`خوش آمدید, ${userName}`;document.getElementById('login-container').style.display='none';document.getElementById('register-container').style.display='none';document.getElementById('tracker-container').style.display='block';loadData();}
+    async function saveData(isManualSave=!1){const userNumber=localStorage.getItem('loggedInUser');if(!userNumber)return;const data={};document.querySelectorAll('#tracker-container input[type="checkbox"]').forEach(checkbox=>{data[checkbox.id]=checkbox.checked;});await db.collection('users').doc(userNumber).update({activityData:data});updateProgressBar();if(isManualSave){alert("آپ کا ڈیٹا کامیابی سے آن لائن محفوظ ہو گیا ہے!");}}
+    async function loadData(){const userNumber=localStorage.getItem('loggedInUser');const doc=await db.collection('users').doc(userNumber).get();const data=doc.exists?doc.data().activityData:null;if(!data){updateProgressBar();return;}
+    for(const id in data){const element=document.getElementById(id);if(element){element.checked=data[id];}}
+    updateProgressBar();}
+    function updateProgressBar(){const checkboxes=document.querySelectorAll('#tracker-container input[type="checkbox"]');const checkedCount=Array.from(checkboxes).filter(cb=>cb.checked).length;const percentage=totalCheckboxes>0?Math.round((checkedCount/totalCheckboxes)*100):0;const progressBar=document.getElementById('progress-bar');progressBar.style.width=`${percentage}%`;progressBar.textContent=`${percentage}%`;}
+    function generateTables(){const dailyTbody=document.getElementById('daily-activities');dailyActivities.forEach((activity,actIndex)=>{let row=`<tr><td class="activity-col">${activity}</td>`;for(let day=1;day<=30;day++){row+=`<td><input type="checkbox" id="act${actIndex}-day${day}" onchange="saveData()"></td>`;}
+    row+=`</tr>`;dailyTbody.innerHTML+=row;});const specialDiv=document.getElementById('special-activities');specialActivities.forEach((activity,actIndex)=>{let checkbox=`<label><input type="checkbox" id="sp${actIndex}" onchange="saveData()"> ${activity}</label>`;specialDiv.innerHTML+=checkbox;});totalCheckboxes=document.querySelectorAll('#tracker-container input[type="checkbox"]').length;}
+    window.onload=function(){generateTables();const loggedInUserNumber=localStorage.getItem('loggedInUser');if(loggedInUserNumber){const userRef=db.collection('users').doc(loggedInUserNumber);userRef.get().then(doc=>{if(doc.exists){showTracker(doc.data().name)}else{localStorage.removeItem('loggedInUser');toggleAuthForms(!1)}})}else{toggleAuthForms(!1);}}
+</script>
+
+</body>
+</html>
